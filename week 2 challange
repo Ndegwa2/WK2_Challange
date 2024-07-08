@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping List</title>
+    
+</head>
+<body>
+    <style>body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: aliceblue;
+    }
+    
+    .container {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        width: 300px;
+    }
+    
+    h1 {
+        margin-bottom: 20px;
+    }
+    
+    #item-input {
+        width: calc(100% - 22px);
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+    
+    button {
+        padding: 10px 20px;
+        margin: 5px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        background-color: #007bff;
+        color: white;
+        transition: background-color 0.3s;
+    }
+    
+    button:hover {
+        background-color: #0056b3;
+    }
+    
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
+    
+    li {
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    li.purchased {
+        text-decoration: line-through;
+        background-color: #d4edda;
+    }
+    </style>
+    <div class="container">
+        <h1>Shopping List</h1>
+        <input type="text" id="item-input" placeholder="Add an item">
+        <button id="add-button">Add</button>
+        <button id="clear-button">Clear List</button>
+        <ul id="shopping-list"></ul>
+    </div>
+    <script>document.addEventListener('DOMContentLoaded', function() {
+        const itemInput = document.getElementById('item-input');
+        const addButton = document.getElementById('add-button');
+        const clearButton = document.getElementById('clear-button');
+        const shoppingList = document.getElementById('shopping-list');
+    
+        let items = JSON.parse(localStorage.getItem('shoppingList')) || [];
+    
+        function renderItems() {
+            shoppingList.innerHTML = '';
+            items.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.textContent = item.name;
+                li.classList.toggle('purchased', item.purchased);
+    
+                li.addEventListener('click', function() {
+                    item.purchased = !item.purchased;
+                    saveAndRender();
+                });
+    
+                shoppingList.appendChild(li);
+            });
+        }
+    
+        function saveAndRender() {
+            localStorage.setItem('shoppingList', JSON.stringify(items));
+            renderItems();
+        }
+    
+        addButton.addEventListener('click', function() {
+            const itemName = itemInput.value.trim();
+            if (itemName) {
+                items.push({ name: itemName, purchased: false });
+                itemInput.value = '';
+                saveAndRender();
+            }
+        });
+    
+        clearButton.addEventListener('click', function() {
+            items = [];
+            saveAndRender();
+        });
+    
+        renderItems();
+    });</script>
+</body>
+</html>
